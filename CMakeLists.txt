@@ -6,12 +6,12 @@ string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_CAPS)
 
 # Check that compiler has C++11 support. Crash otherwise.
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
-  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++11 support.")
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++17 support.")
 else()
   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} "
-    "has no C++11 support. Please use a different C++ compiler.")
+    "has no C++17 support. Please use a different C++ compiler.")
 endif()
 
 
