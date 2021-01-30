@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <stack>
@@ -50,9 +51,35 @@ class HandleAllocator {
     FillEmptyData();
   }
 
-  std::optional<const T&> GetConst(const Handle& handle) const {}
-  std::optional<T&> Get(const Handle& handle) {}
-  bool Delete(const Handle& handle) {}
+  std::optional<std::reference_wrapper<const T>> GetConst(
+      const Handle& handle) const {
+    if (!IsHandleValid(handle)) {
+      return {}
+    }
+
+    return std::optional<std::reference_wrapper<const T>> {
+      std::cref(data_.at(handle.index).data)
+    }
+  }
+
+  std::optional<std::reference_wrapper<T>> Get(const Handle& handle) {
+    if (!IsHandleValid(handle)) {
+      return {}
+    }
+
+    return std::optional<std::reference_wrapper<T>> {
+      std::ref(data_.at(handle.index).data)
+    }
+  }
+
+  bool Delete(const Handle& handle) {
+    if (!IsHandleValid(handle)) {
+      return false;
+    }
+
+    data_.at(handle.index).handle.pattern += 1;
+    free_elements_.push(handle.index);
+  }
 
  private:
   void FillEmptyData() {
@@ -63,6 +90,15 @@ class HandleAllocator {
       data_.back().handle.pattern = 0;
       free_elements_.push(index);
     }
+  }
+
+  bool IsHandleValid(const Handle& handle) {
+    size_t index = handle.index;
+    size_t pattern = handle.pattern;
+    if (data_.size() < index || data_.at(index).handle.pattern != pattern) {
+      return false;
+    }
+    return true;
   }
 
   std::size_t max_size_;
