@@ -1,13 +1,13 @@
 #pragma once
 
+#include <handle_allocator/handle.h>
+
 #include <cstddef>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <stack>
 #include <vector>
-
-#include "handle.h"
 
 namespace handle_allocator {
 template <typename T>

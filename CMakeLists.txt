@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(handle_allocator CXX)
+project(handle_allocator VERSION 0.0.1 LANGUAGES CXX)
 
 # Get the project name in capital letters for the lib namespace
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_CAPS)
@@ -25,11 +25,67 @@ option(BUILD_EXAMPLES "Build all examples." OFF)
 ## Build ##
 ###########
 
-# Since this is a template based library we don't compile anything.
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME}
+  INTERFACE 
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
+)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
+
 
 #############
 ## Install ##
 #############
+
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
+
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}_Targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+set(config_install_dir "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake")
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+# Targets:
+install(EXPORT ${PROJECT_NAME}_Targets
+        FILE ${PROJECT_NAME}Targets.cmake
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
+
+
+# Configuration:
+
+#
+configure_package_config_file(
+  "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+  "${generated_dir}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${config_install_dir}"
+)
+
+# Configure '<PROJECT-NAME>ConfigVersion.cmake'
+write_basic_package_version_file(
+  "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+# Config
+install(
+  FILES       "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake"
+              "${generated_dir}/${PROJECT_NAME}Config.cmake"
+  DESTINATION "${config_install_dir}"
+)
+
+# Headers:
+install(
+  DIRECTORY "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}"
+  DESTINATION include
+)
 
 ##############
 ## Examples ##
