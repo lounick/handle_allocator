@@ -61,11 +61,17 @@ endfunction()
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
+ha_add_gtest(gtest_insert gtest_insert.cpp)
+# ha_add_gtest(gtest_get gtest_get.cpp)
+# ha_add_gtest(gtest_delete gtest_delete.cpp)
+
+set(CXX_17_TEST_TARGETS gtest_insert) #gtest_get gtest_delete )
+
 # Set required C++11 flag
 if(CMAKE_VERSION VERSION_LESS "3.1")
-  set_target_properties(${CXX_11_TEST_TARGETS} PROPERTIES COMPILE_FLAGS "-std=c++11")
+  set_target_properties(${CXX_17_TEST_TARGETS} PROPERTIES COMPILE_FLAGS "-std=c++17")
 else()
-  set_property(TARGET ${CXX_11_TEST_TARGETS} PROPERTY CXX_STANDARD 11)
-  set_property(TARGET ${CXX_11_TEST_TARGETS} PROPERTY CXX_STANDARD_REQUIRED ON)
-  set_property(TARGET ${CXX_11_TEST_TARGETS} PROPERTY CXX_EXTENSIONS OFF)
+  set_property(TARGET ${CXX_17_TEST_TARGETS} PROPERTY CXX_STANDARD 17)
+  set_property(TARGET ${CXX_17_TEST_TARGETS} PROPERTY CXX_STANDARD_REQUIRED ON)
+  set_property(TARGET ${CXX_17_TEST_TARGETS} PROPERTY CXX_EXTENSIONS OFF)
 endif()
