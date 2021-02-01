@@ -49,27 +49,26 @@ class HandleAllocator {
       return {};
     }
     FillEmptyData();
+    return std::optional<Handle>{data_.back().handle};
   }
 
   std::optional<std::reference_wrapper<const T>> GetConst(
       const Handle& handle) const {
     if (!IsHandleValid(handle)) {
-      return {}
+      return {};
     }
 
-    return std::optional<std::reference_wrapper<const T>> {
-      std::cref(data_.at(handle.index).data)
-    }
+    return std::optional<std::reference_wrapper<const T>>{
+        std::cref(data_.at(handle.index).data)};
   }
 
   std::optional<std::reference_wrapper<T>> Get(const Handle& handle) {
     if (!IsHandleValid(handle)) {
-      return {}
+      return {};
     }
 
-    return std::optional<std::reference_wrapper<T>> {
-      std::ref(data_.at(handle.index).data)
-    }
+    return std::optional<std::reference_wrapper<T>>{
+        std::ref(data_.at(handle.index).data)};
   }
 
   bool Delete(const Handle& handle) {
@@ -84,7 +83,7 @@ class HandleAllocator {
  private:
   void FillEmptyData() {
     while (data_.size() < data_.capacity()) {
-      data_.push_back(AllocatorElement());
+      data_.push_back(AllocatorElement<T>());
       std::size_t index = data_.size() - 1;
       data_.back().handle.index = index;
       data_.back().handle.pattern = 0;
