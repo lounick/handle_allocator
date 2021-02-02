@@ -78,6 +78,7 @@ class HandleAllocator {
 
     data_.at(handle.index).handle.pattern += 1;
     free_elements_.push(handle.index);
+    return true;
   }
 
  private:
