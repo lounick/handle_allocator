@@ -91,10 +91,10 @@ class HandleAllocator {
     }
   }
 
-  bool IsHandleValid(const Handle& handle) {
+  bool IsHandleValid(const Handle& handle) const {
     size_t index = handle.index;
     size_t pattern = handle.pattern;
-    if (data_.size() < index || data_.at(index).handle.pattern != pattern) {
+    if (data_.size() <= index || data_.at(index).handle.pattern != pattern) {
       return false;
     }
     return true;
