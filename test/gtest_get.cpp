@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <handle_allocator/handle.h>
 #include <handle_allocator/handle_allocator.h>
+
 namespace {
 struct Point2D {
   double x;
@@ -15,8 +16,9 @@ TEST(TEST_GET, TEST_GET_CREF_CORRECT_HANDLE) {
   handle_allocator::Handle handle = ret.value();
   auto ret_cref = ha_point2d.GetConst(handle);
   EXPECT_TRUE(ret_cref.has_value());
-  EXPECT_DOUBLE_EQ(ret_cref.value().get().x, 0.0);
-  EXPECT_DOUBLE_EQ(ret_cref.value().get().y, 0.0);
+  std::shared_ptr<const Point2D> ptr = ret_cref.value().lock();
+  EXPECT_DOUBLE_EQ(ptr->x, 0.0);
+  EXPECT_DOUBLE_EQ(ptr->y, 0.0);
 }
 
 TEST(TEST_GET, TEST_GET_CREF_INVALID_PATTERN) {
@@ -42,8 +44,9 @@ TEST(TEST_GET, TEST_GET_REF_CORRECT_HANDLE) {
   handle_allocator::Handle handle = ret.value();
   auto ret_ref = ha_point2d.Get(handle);
   EXPECT_TRUE(ret_ref.has_value());
-  EXPECT_DOUBLE_EQ(ret_ref.value().get().x, 0.0);
-  EXPECT_DOUBLE_EQ(ret_ref.value().get().y, 0.0);
+  std::shared_ptr<Point2D> ptr = ret_ref.value().lock();
+  EXPECT_DOUBLE_EQ(ptr->x, 0.0);
+  EXPECT_DOUBLE_EQ(ptr->y, 0.0);
 }
 
 TEST(TEST_GET, TEST_GET_REF_INVALID_PATTERN) {
@@ -68,9 +71,11 @@ TEST(TEST_GET, TEST_GET_CORRECT_HANDLE_AND_UPDATE) {
   EXPECT_TRUE(ret.has_value());
   handle_allocator::Handle handle = ret.value();
   auto ret_ref = ha_point2d.Get(handle);
-  ret_ref.value().get().x = 42.0;
+  std::shared_ptr<Point2D> ptr = ret_ref.value().lock();
+  ptr->x = 42.0;
   auto ret_ref2 = ha_point2d.Get(handle);
-  EXPECT_DOUBLE_EQ(ret_ref2.value().get().x, 42.0);
+  std::shared_ptr<Point2D> ptr2 = ret_ref2.value().lock();
+  EXPECT_DOUBLE_EQ(ptr2->x, 42.0);
 }
 
 int main(int argc, char** argv) {
