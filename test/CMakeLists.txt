@@ -61,11 +61,12 @@ endfunction()
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
+ha_add_gtest(gtest_handle gtest_handle.cpp)
 ha_add_gtest(gtest_insert gtest_insert.cpp)
 ha_add_gtest(gtest_get gtest_get.cpp)
 ha_add_gtest(gtest_delete gtest_delete.cpp)
 
-set(CXX_17_TEST_TARGETS gtest_insert gtest_get gtest_delete )
+set(CXX_17_TEST_TARGETS gtest_handle gtest_insert gtest_get gtest_delete )
 
 # Set required C++11 flag
 if(CMAKE_VERSION VERSION_LESS "3.1")
