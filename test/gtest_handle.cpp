@@ -25,6 +25,12 @@ TEST(TEST_HANDLE, TEST_HANDLE_EQUALS_INEQUAL_HANDLES_BOTH) {
   EXPECT_FALSE(h1 == h2);
 }
 
+TEST(TEST_HANDLE, TEST_HANDLE_EQUALS_CONST_LHS) {
+  const handle_allocator::Handle h1{0, 0};
+  handle_allocator::Handle h2{0, 0};
+  EXPECT_TRUE(h1 == h2);
+}
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
 

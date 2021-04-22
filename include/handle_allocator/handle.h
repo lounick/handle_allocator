@@ -6,7 +6,7 @@ namespace handle_allocator {
 struct Handle {
   std::size_t index;
   std::size_t pattern;
-  inline bool operator==(const Handle& rhs) {
+  inline bool operator==(const Handle& rhs) const {
     return this->index == rhs.index && this->pattern == rhs.pattern;
   }
 };
